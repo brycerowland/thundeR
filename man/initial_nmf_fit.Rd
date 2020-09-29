@@ -4,7 +4,7 @@
 \alias{initial_nmf_fit}
 \title{Initial NMF fit for mixture matrix of Hi-C data}
 \usage{
-initial_nmf_fit(mixture, n_cell_types = 2)
+initial_nmf_fit(mixture, n_cell_types = 2, itter = 200)
 }
 \arguments{
 \item{mixture}{Input mixture matrix for deconvolution where rows are Hi-C features and columns are samples.}
