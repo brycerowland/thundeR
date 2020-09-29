@@ -1,15 +1,18 @@
-#'
+#' THUNDER estimates cell type proportions in bulk Hi-C datasets
 #'
 #'@importFrom readr read_tsv
 #'@importFrom tibble column_to_rownames
 #'@importFrom dplyr filter
 #'@importFrom dplyr %>%
 #'
-
+#' @param path_to_mixture String. Path to .tsv file of bulk Hi-C samples.
+#' @param n_cell_types Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.
+#' @param itter Integer. Number of itterations for NMF algorithm. Default is 200.
+#' @param out_init_nmf String. Default is NULL. If character, then saves the initial NMF fit as a .RDS object to specified file path.
+#'
 #' @export
 #'
-
-thunder <- function(path_to_mixture, n_cell_types, itter,
+thunder <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL){
   .mix <- read_tsv(path_to_mixture) %>%
     column_to_rownames("bin_name") %>%
@@ -25,3 +28,4 @@ thunder <- function(path_to_mixture, n_cell_types, itter,
   }
   return(.fit_init)
 }
+

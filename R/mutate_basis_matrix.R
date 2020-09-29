@@ -5,8 +5,14 @@
 #' @importFrom dplyr rowwise
 #' @importFrom dplyr mutate
 #' @importFrom dplyr ungroup
+#' @importFrom dplyr c_across
+#' @importFrom dplyr starts_with
+#' @importFrom dplyr all_of
+#' @importFrom dplyr select
+#' @importFrom dplyr pull
 #' @importFrom NMF featureScore
 #' @importFrom tibble rownames_to_column
+#' @importFrom stringr str_detect
 #'
 #' @param nmf_obj NMF object - usually the output of `initial_nmf_fit`
 #'

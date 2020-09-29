@@ -9,9 +9,9 @@ initial_nmf_fit(mixture, n_cell_types = 2, itter = 200)
 \arguments{
 \item{mixture}{Input mixture matrix for deconvolution where rows are Hi-C features and columns are samples.}
 
-\item{out}{Complete output file path including name of output .rds}
+\item{n_cell_types}{Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.}
 
-\item{cell_types}{Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.}
+\item{itter}{Integer. Number of itterations for NMF algorithm. Default is 200.}
 }
 \description{
 Initial NMF fit for mixture matrix of Hi-C data
