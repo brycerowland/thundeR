@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "bryce.rowland@unc.edu")
 Description: Will add later.
-License: What license it uses.
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

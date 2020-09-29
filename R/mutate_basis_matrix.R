@@ -1,7 +1,6 @@
 #' Compute summary statistics on rows of cell type profile matrix
 #'
 #' @importFrom NMF basis
-#' @importFrom stringr str_c
 #' @importFrom tibble as_tibble
 #' @importFrom dplyr rowwise
 #' @importFrom dplyr mutate
@@ -16,7 +15,7 @@
 mutate_basis_matrix <- function(nmf_obj){
   .basis <- basis(nmf_obj)
 
-  colnames(.basis) <- str_c("celltype", seq(1:dim(.basis)[[2]]), "_features")
+  colnames(.basis) <- paste0("celltype", seq(1:dim(.basis)[[2]]), "_features")
 
   .basis  %>%
     as_tibble(rownames = "bin_pair") %>%
