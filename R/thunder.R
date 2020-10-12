@@ -19,13 +19,33 @@ thunder <- function(path_to_mixture, n_cell_types, itter=200,
     filter(rowSums(.) != 0)
 
 
-  .fit_init <- initial_nmf_fit(mixture = .mix,
+  .fit_init <- nmf_fit(mixture = .mix,
                               n_cell_types = n_cell_types,
                               itter = itter)
   if ( is.character(out_init_nmf) ){
     print("Saving initial NMF fit . . .")
     saveRDS(object = .fit_init, file = out_init_nmf)
   }
-  return(.fit_init)
+  .subset_mix <- subset_init_nmf(.mix, .fit_init)
+
+  .subset_fit <- nmf_fit(mixture = .subset_mix,
+                         n_cell_types = n_cell_types,
+                         itter = itter)
+}
+
+
+#' Get cell type proportions from THUNDER fit
+#'
+#'@importFrom NMF coef
+#'
+#' @param thunder_fit Output of `thunder`
+#'
+#' @export
+#'
+get_props <- function(thunder_fit){
+  thunder_fit %>%
+    coef()  %>%
+    sweep(2, colSums(.), "/") %>%
+    t()
 }
 

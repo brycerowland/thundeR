@@ -11,7 +11,9 @@ thunder(path_to_mixture, n_cell_types, itter = 200, out_init_nmf = NULL)
 
 \item{n_cell_types}{Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.}
 
-\item{itter}{String. Default is NULL. If character, then saves the initial NMF fit as a .RDS object to specified file path.}
+\item{itter}{Integer. Number of itterations for NMF algorithm. Default is 200.}
+
+\item{out_init_nmf}{String. Default is NULL. If character, then saves the initial NMF fit as a .RDS object to specified file path.}
 }
 \description{
 THUNDER estimates cell type proportions in bulk Hi-C datasets

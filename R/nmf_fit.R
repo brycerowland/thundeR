@@ -1,4 +1,4 @@
-#' Initial NMF fit for mixture matrix of Hi-C data
+#' NMF fit for mixture matrix of Hi-C data
 #'
 #' @importFrom NMF nmf
 #'
@@ -7,7 +7,7 @@
 #' @param itter Integer. Number of itterations for NMF algorithm. Default is 200.
 #'
 #' @export
-initial_nmf_fit <- function(mixture, n_cell_types = 2, itter = 200){
+nmf_fit <- function(mixture, n_cell_types = 2, itter = 200){
   fit <- NMF::nmf(mixture, rank = n_cell_types, method="brunet",seed="random",nrun=itter)
   return(fit)
 }

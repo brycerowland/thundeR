@@ -1,6 +1,6 @@
 Package: thundeR
 Title: thundeR: R-package to run the Two-step Hi-c UNsupervised DEconvolution appRoach
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Bryce",
            family = "Rowland",
