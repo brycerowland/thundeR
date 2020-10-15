@@ -57,7 +57,7 @@ subset_init_nmf <- function(mixture_data, nmf_obj){
       (.$feature_score > mean(.$feature_score) + 3*sd(.$feature_score)) |
         (.$std_dev > mean(.$std_dev) + 3*sd(.$std_dev))
     ))) %>%
-    unnest(thunder_bins) %>%
+    tidyr::unnest(thunder_bins) %>%
     ungroup() %>%
     arrange(thunder_bins) %>%
     pull(thunder_bins)
