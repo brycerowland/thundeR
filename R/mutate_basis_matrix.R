@@ -7,6 +7,7 @@
 #' @importFrom tibble rownames_to_column
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_split
+#' @importFrom tidyr unnest
 #'
 #'
 #' @param nmf_obj NMF object - usually the output of `initial_nmf_fit`
