@@ -3,6 +3,7 @@
 export(get_props)
 export(mutate_basis_matrix)
 export(nmf_fit)
+export(subset_init_nmf)
 export(thunder)
 import(dplyr)
 importFrom(NMF,basis)

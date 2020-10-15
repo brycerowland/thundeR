@@ -32,6 +32,22 @@ mutate_basis_matrix <- function(nmf_obj){
     return()
 }
 
+#' Subset Initial NMF fit after Feature Selection
+#'
+#' @importFrom NMF basis
+#' @importFrom tibble as_tibble
+#' @import dplyr
+#' @importFrom NMF featureScore
+#' @importFrom tibble rownames_to_column
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_split
+#' @importFrom tidyr unnest
+#'
+#' @param mixture_data mixture data from Hi-C experiment.
+#' @param nmf_obj NMF object - usually the output of `initial_nmf_fit`
+#'
+#'
+#' @export
 subset_init_nmf <- function(mixture_data, nmf_obj){
   .basis_m <- mutate_basis_matrix(nmf_obj)
 

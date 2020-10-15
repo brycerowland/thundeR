@@ -31,6 +31,7 @@ thunder <- function(path_to_mixture, n_cell_types, itter=200,
   .subset_fit <- nmf_fit(mixture = .subset_mix,
                          n_cell_types = n_cell_types,
                          itter = itter)
+  return(.subset_fit)
 }
 
 
