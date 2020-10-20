@@ -12,7 +12,7 @@
 #'
 #' @export
 #'
-thunder <- function(path_to_mixture, n_cell_types, itter=200,
+thunder_feature_selection <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL){
   .mix <- read_tsv(path_to_mixture) %>%
     column_to_rownames("bin_name") %>%
@@ -28,11 +28,29 @@ thunder <- function(path_to_mixture, n_cell_types, itter=200,
   }
   .subset_mix <- subset_init_nmf(.mix, .fit_init)
 
+  return(.subset_mix)
+}
+
+
+thunder_estimate_CTP <- function(.subset_mixture,
+                                 n_cell_types,
+                                 itter){
+
   .subset_fit <- nmf_fit(mixture = .subset_mix,
                          n_cell_types = n_cell_types,
                          itter = itter)
   return(.subset_fit)
+
 }
+
+run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
+                    out_init_nmf = NULL) {
+  .subset_mix <- thunder_feature_selection(path_to_mixture, n_cell_types, itter, out_init_nmf)
+  thunder_estimate_CTP(.subset_mix,
+                       n_cell_types,
+                       itter)
+}
+
 
 
 #' Get cell type proportions from THUNDER fit

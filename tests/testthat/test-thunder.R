@@ -1,4 +1,4 @@
-test_that("out_init_nmf option outputs a .rds file", {
+thunder_feature_selection("out_init_nmf option outputs a .rds file", {
 
   thunder("test_data.txt.gz", n_cell_types = 2,
           itter = 1,
