@@ -1,4 +1,4 @@
-#' THUNDER estimates cell type proportions in bulk Hi-C datasets
+#'  Step One of THUNDER algorithm.
 #'
 #'@importFrom readr read_tsv
 #'@importFrom tibble column_to_rownames
@@ -31,7 +31,15 @@ thunder_feature_selection <- function(path_to_mixture, n_cell_types, itter=200,
   return(.subset_mix)
 }
 
-
+#' Step Two of THUNDER algorithm
+#'
+#'
+#' @param .subset_mixture Matrix. Usually the output of `thunder_feature_selection`
+#' @param n_cell_types Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.
+#' @param itter Integer. Number of itterations for NMF algorithm. Default is 200.
+#'
+#' @export
+#'
 thunder_estimate_CTP <- function(.subset_mixture,
                                  n_cell_types,
                                  itter){
@@ -43,6 +51,16 @@ thunder_estimate_CTP <- function(.subset_mixture,
 
 }
 
+
+#' THUNDER estimates cell type proportions in bulk Hi-C datasets
+#'
+#' @param path_to_mixture String. Path to .tsv file of bulk Hi-C samples.
+#' @param n_cell_types Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.
+#' @param itter Integer. Number of itterations for NMF algorithm. Default is 200.
+#' @param out_init_nmf String. Default is NULL. If character, then saves the initial NMF fit as a .RDS object to specified file path.
+#'
+#' @export
+#'
 run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL) {
   .subset_mix <- thunder_feature_selection(path_to_mixture, n_cell_types, itter, out_init_nmf)
@@ -50,7 +68,6 @@ run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
                        n_cell_types,
                        itter)
 }
-
 
 
 #' Get cell type proportions from THUNDER fit
