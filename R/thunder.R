@@ -1,6 +1,7 @@
 #'  Step One of THUNDER algorithm.
 #'
 #'@importFrom readr read_tsv
+#'@importFrom readr write_tsv
 #'@importFrom tibble column_to_rownames
 #'@importFrom dplyr filter
 #'@importFrom dplyr %>%
@@ -12,7 +13,9 @@
 #'
 #' @export
 #'
-thunder_feature_selection <- function(path_to_mixture, n_cell_types, itter=200,
+thunder_feature_selection <- function(path_to_mixture,
+                                      subset_mix_out_path = NULL,
+                                      n_cell_types, itter=200,
                     out_init_nmf = NULL){
   .mix <- read_tsv(path_to_mixture) %>%
     column_to_rownames("bin_name") %>%
@@ -28,7 +31,14 @@ thunder_feature_selection <- function(path_to_mixture, n_cell_types, itter=200,
   }
   .subset_mix <- subset_init_nmf(.mix, .fit_init)
 
-  return(.subset_mix)
+  if (is.character(subset_mix_out_path)){
+    print("Saving subset mixture data")
+    write_tsv(.subset_mix,
+              path = subset_mix_out_path)
+  }
+  else{
+    return(.subset_mix)
+  }
 }
 
 #' Step Two of THUNDER algorithm

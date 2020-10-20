@@ -6,6 +6,7 @@
 \usage{
 thunder_feature_selection(
   path_to_mixture,
+  subset_mix_out_path = NULL,
   n_cell_types,
   itter = 200,
   out_init_nmf = NULL
