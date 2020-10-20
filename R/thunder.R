@@ -44,7 +44,7 @@ thunder_estimate_CTP <- function(.subset_mixture,
                                  n_cell_types,
                                  itter){
 
-  .subset_fit <- nmf_fit(mixture = .subset_mix,
+  .subset_fit <- nmf_fit(mixture = .subset_mixture,
                          n_cell_types = n_cell_types,
                          itter = itter)
   return(.subset_fit)
@@ -63,10 +63,12 @@ thunder_estimate_CTP <- function(.subset_mixture,
 #'
 run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL) {
-  .subset_mix <- thunder_feature_selection(path_to_mixture, n_cell_types, itter, out_init_nmf)
-  thunder_estimate_CTP(.subset_mix,
+  .subset_mix <- thunder_feature_selection(path_to_mixture, n_cell_types, itter,
+                                           out_init_nmf =out_init_nmf)
+  .subset_fit <- thunder_estimate_CTP(.subset_mixture = .subset_mix,
                        n_cell_types,
                        itter)
+  return(.subset_fit)
 }
 
 
