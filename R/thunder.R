@@ -44,15 +44,19 @@ thunder_feature_selection <- function(path_to_mixture,
 #' Step Two of THUNDER algorithm
 #'
 #'
+#' @importFrom readr read_tsv
+#'
 #' @param .subset_mixture Matrix. Usually the output of `thunder_feature_selection`
 #' @param n_cell_types Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.
 #' @param itter Integer. Number of itterations for NMF algorithm. Default is 200.
 #'
 #' @export
 #'
-thunder_estimate_CTP <- function(.subset_mixture,
+thunder_estimate_CTP <- function(.subset_mixture_path,
                                  n_cell_types,
                                  itter){
+
+  .subset_mixture <- read_tsv(.subset_mixture_path)
 
   .subset_fit <- nmf_fit(mixture = .subset_mixture,
                          n_cell_types = n_cell_types,
