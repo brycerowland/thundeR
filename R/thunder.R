@@ -3,6 +3,7 @@
 #'@importFrom readr read_tsv
 #'@importFrom readr write_tsv
 #'@importFrom tibble column_to_rownames
+#'@importFrom tibble rownames_to_column
 #'@importFrom dplyr filter
 #'@importFrom dplyr %>%
 #'
@@ -32,9 +33,9 @@ thunder_feature_selection <- function(path_to_mixture,
   .subset_mix <- subset_init_nmf(.mix, .fit_init)
 
   if (is.character(subset_mix_out_path)){
-    print("Saving subset mixture data")
-    write_tsv(.subset_mix,
-              path = subset_mix_out_path)
+    .subset_mix %>%
+      rownames_to_column(var = "bin_name") %>%
+      write_tsv(file = subset_mix_out_path)
   }
   else{
     return(.subset_mix)
@@ -45,6 +46,7 @@ thunder_feature_selection <- function(path_to_mixture,
 #'
 #'
 #' @importFrom readr read_tsv
+#' @importFrom tibble column_to_rownames
 #'
 #' @param .subset_mixture Matrix. Usually the output of `thunder_feature_selection`
 #' @param n_cell_types Integer. The number of columns in the basis matrix of the deconvolution. Corresponds to the number of cell types in bulk Hi-C mixture.
@@ -56,7 +58,8 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
                                  n_cell_types,
                                  itter){
 
-  .subset_mixture <- read_tsv(.subset_mixture_path)
+  .subset_mixture <- read_tsv(.subset_mixture_path) %>%
+    column_to_rownames("bin_name")
 
   .subset_fit <- nmf_fit(mixture = .subset_mixture,
                          n_cell_types = n_cell_types,
@@ -76,10 +79,13 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
 #' @export
 #'
 run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
-                    out_init_nmf = NULL) {
-  .subset_mix <- thunder_feature_selection(path_to_mixture, n_cell_types, itter,
-                                           out_init_nmf =out_init_nmf)
-  .subset_fit <- thunder_estimate_CTP(.subset_mixture = .subset_mix,
+                    out_init_nmf = NULL,
+                    subset_mix_out_path) {
+  thunder_feature_selection(path_to_mixture, n_cell_types, itter,
+                                           out_init_nmf =out_init_nmf,
+                            subset_mix_out_path = subset_mix_out_path)
+
+  .subset_fit <- thunder_estimate_CTP(.subset_mixture = subset_mix_out_path,
                        n_cell_types,
                        itter)
   return(.subset_fit)
