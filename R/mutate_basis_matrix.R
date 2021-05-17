@@ -22,13 +22,14 @@ mutate_basis_matrix <- function(nmf_obj){
   .basis  %>%
     as_tibble(rownames = "bin_pair") %>%
     rowwise() %>%
-    mutate(std_dev = sd(c_across(starts_with("celltype")))) %>%
-    ungroup() %>%
-    mutate(feature_score = featureScore(nmf_obj),
+    mutate(std_dev = sd(c_across(starts_with("celltype"))),
+           split = list(str_split(bin_pair, "_")),
            contact_type = if_else(
-             str_split(bin_pair[[1]], "_")[[1]][2] == str_split(bin_pair[[1]], "_")[[1]][5],
+             split[[1]][2] == split[[1]][5],
              "intra", "inter"
            )) %>%
+    ungroup() %>%
+    mutate(feature_score = featureScore(nmf_obj)) %>%
     return()
 }
 
