@@ -14,20 +14,18 @@
 #'
 #'
 #' @export
-mutate_basis_matrix <- function(nmf_obj){
+mutate_basis_matrix <- function(nmf_obj,
+                                feature_name, contact_type){
   .basis <- basis(nmf_obj)
 
   colnames(.basis) <- paste0("celltype", seq(1:dim(.basis)[[2]]), "_features")
 
-  .basis  %>%
-    as_tibble(rownames = "feature_name") %>%
+  #Bind columns with .feature_score and .contact_type.
+  tibble(feature_name = feature_name,
+         contact_type = contact_type,
+         as_tibble(.basis)) %>%
     rowwise() %>%
-    mutate(std_dev = sd(c_across(starts_with("celltype"))),
-           split = list(str_split(feature_name, "_")),
-           contact_type = if_else(
-             split[[1]][2] == split[[1]][5],
-             "intra", "inter"
-           )) %>%
+    mutate(std_dev = sd(c_across(starts_with("celltype")))) %>%
     ungroup() %>%
     mutate(feature_score = featureScore(nmf_obj)) %>%
     return()
@@ -50,8 +48,13 @@ mutate_basis_matrix <- function(nmf_obj){
 #'
 #'
 #' @export
-subset_init_nmf <- function(mixture_data, nmf_obj){
-  .basis_m <- mutate_basis_matrix(nmf_obj)
+subset_init_nmf <- function(mixture_data, nmf_obj,
+                            feature_name,
+                            contact_type){
+
+  .basis_m <- mutate_basis_matrix(nmf_obj,
+                                  feature_name,
+                                  contact_type)
 
 
   #Rewrite such that if no bins are selected we output message saying so and end the function.
@@ -77,6 +80,7 @@ subset_init_nmf <- function(mixture_data, nmf_obj){
     arrange(thunder_bins) %>%
     pull(thunder_bins)
   subset_mix <- mixture_data[rows,]
+
   return(subset_mix)
 }
 

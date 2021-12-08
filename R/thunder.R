@@ -21,7 +21,8 @@ thunder_feature_selection <- function(path_to_mixture,
                     .run_step_two){
 
   .raw_mix <- read_tsv(path_to_mixture,
-                   show_col_types = FALSE)
+                   show_col_types = FALSE) %>%
+    filter(rowSums(across(-c(1,2))) > 0)
 
   #Process input data.
   if(("feature_name" != colnames(.raw_mix)[[1]])){
@@ -36,17 +37,22 @@ thunder_feature_selection <- function(path_to_mixture,
   .contact_type <- .raw_mix$contact_type
 
   .mix <- .raw_mix %>%
-    select(-c(1,2)) %>%
-    filter(rowSums(.) > 0)
+    select(-c(1,2))
 
   .fit_init <- nmf_fit(mixture = .mix,
                               n_cell_types = n_cell_types,
                               itter = itter)
   if ( is.character(out_init_nmf) ){
     print("Saving initial NMF fit . . .")
-    saveRDS(object = .fit_init, file = out_init_nmf)
+    saveRDS(object = list(.fit_init = .fit_init,
+                          .feature_name = .feature_name,
+                          .contact_type = .contact_type),
+            file = out_init_nmf)
   }
-  .subset_mix <- subset_init_nmf(.mix, .fit_init)
+
+  .subset_mix <- subset_init_nmf(.mix, .fit_init,
+                                 feature_name = .feature_name,
+                                 contact_type = .contact_type)
 
   #If we detect no informative bins, don't run step two.
   if(0 == 0){
