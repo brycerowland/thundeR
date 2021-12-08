@@ -1,7 +1,7 @@
 test_that("colnames are formatted correctly", {
 
   #Generate some random number of cell types
-  k <- sample(2:10, 1)
+  k <- 2
   test_fit <- run_thunder("test_data.txt.gz", n_cell_types = k,
           itter = 1,
           subset_mix_out_path = "test_subset_out.txt.gz")

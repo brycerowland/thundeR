@@ -17,10 +17,13 @@
 thunder_feature_selection <- function(path_to_mixture,
                                       subset_mix_out_path = NULL,
                                       n_cell_types, itter=200,
-                    out_init_nmf = NULL){
-  .mix <- read_tsv(path_to_mixture) %>%
+                    out_init_nmf = NULL,
+                    .run_step_two){
+  .mix <- read_tsv(path_to_mixture,
+                   show_col_types = FALSE) %>%
     column_to_rownames("bin_name") %>%
     filter(rowSums(.) != 0)
+
 
 
   .fit_init <- nmf_fit(mixture = .mix,
@@ -32,13 +35,30 @@ thunder_feature_selection <- function(path_to_mixture,
   }
   .subset_mix <- subset_init_nmf(.mix, .fit_init)
 
-  if (is.character(subset_mix_out_path)){
-    .subset_mix %>%
-      rownames_to_column(var = "bin_name") %>%
-      write_tsv(file = subset_mix_out_path)
+  #If we detect no informative bins, don't run step two.
+  if(0 == 0){
+    cat("\n")
+    cat("THUNDER did not detect informative bin-pairs.\n")
+    .run_step_two = FALSE
+  }
+
+  return_list <- list(run_step_two = .run_step_two,
+                      fit_init = .fit_init)
+
+
+  if(.run_step_two == TRUE){
+    if (is.character(subset_mix_out_path)){
+      .subset_mix %>%
+        rownames_to_column(var = "bin_name") %>%
+        write_tsv(file = subset_mix_out_path)
+      return(return_list)
+    }
+    else{
+      return(.subset_mix)
+    }
   }
   else{
-    return(.subset_mix)
+    return(return_list)
   }
 }
 
@@ -58,7 +78,8 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
                                  n_cell_types,
                                  itter){
 
-  .subset_mixture <- read_tsv(.subset_mixture_path) %>%
+  .subset_mixture <- read_tsv(.subset_mixture_path,
+                              show_col_types = FALSE) %>%
     column_to_rownames("bin_name")
 
   .subset_fit <- nmf_fit(mixture = .subset_mixture,
@@ -81,14 +102,33 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
 run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL,
                     subset_mix_out_path) {
-  thunder_feature_selection(path_to_mixture, n_cell_types, itter,
-                                           out_init_nmf =out_init_nmf,
-                            subset_mix_out_path = subset_mix_out_path)
 
-  .subset_fit <- thunder_estimate_CTP(.subset_mixture = subset_mix_out_path,
-                       n_cell_types,
-                       itter)
-  return(.subset_fit)
+  run_step_two <- TRUE
+
+  print("running feature selection")
+  #Returns a list with initial NMF fit, subset NMF fit object, and run step two boolean.
+  step1_l <- thunder_feature_selection(path_to_mixture, n_cell_types, itter,
+                                           out_init_nmf =out_init_nmf,
+                            subset_mix_out_path = subset_mix_out_path,
+                            .run_step_two = run_step_two)
+
+  run_step_two <- step1_l$run_step_two
+
+  if(run_step_two){
+    print("Estimating Cell Type Proprotions with THUNDER Informative Bins")
+
+    .subset_fit <- thunder_estimate_CTP(.subset_mixture = subset_mix_out_path,
+                                        n_cell_types,
+                                        itter)
+    return(.subset_fit)
+  } else{
+    cat("Returning Initial NMF fit as final deconvolution estimate.\n")
+
+    return(step1_l$fit_init)
+  }
+
+
+
 }
 
 

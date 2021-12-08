@@ -1,6 +1,6 @@
 Package: thundeR
 Title: thundeR: R-package to run the Two-step Hi-c UNsupervised DEconvolution appRoach
-Version: 0.0.4
+Version: 0.0.6
 Authors@R: 
     person(given = "Bryce",
            family = "Rowland",
@@ -13,4 +13,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: NMF,dplyr,tibble,readr,stringr,rlang, tidyr
 Suggests: 
-    testthat
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

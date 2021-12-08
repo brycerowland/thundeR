@@ -1,0 +1,1 @@
+bin_name	mixture0_855	mixture86_770	mixture171_684	mixture257_599	mixture342_513	mixture428_428	mixture514_342	mixture599_257	mixture684_171	mixture770_86	mixture855_0
