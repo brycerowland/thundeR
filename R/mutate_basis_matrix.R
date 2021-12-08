@@ -20,10 +20,10 @@ mutate_basis_matrix <- function(nmf_obj){
   colnames(.basis) <- paste0("celltype", seq(1:dim(.basis)[[2]]), "_features")
 
   .basis  %>%
-    as_tibble(rownames = "bin_pair") %>%
+    as_tibble(rownames = "feature_name") %>%
     rowwise() %>%
     mutate(std_dev = sd(c_across(starts_with("celltype"))),
-           split = list(str_split(bin_pair, "_")),
+           split = list(str_split(feature_name, "_")),
            contact_type = if_else(
              split[[1]][2] == split[[1]][5],
              "intra", "inter"

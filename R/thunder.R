@@ -19,12 +19,25 @@ thunder_feature_selection <- function(path_to_mixture,
                                       n_cell_types, itter=200,
                     out_init_nmf = NULL,
                     .run_step_two){
-  .mix <- read_tsv(path_to_mixture,
-                   show_col_types = FALSE) %>%
-    column_to_rownames("bin_name") %>%
-    filter(rowSums(.) != 0)
 
+  .raw_mix <- read_tsv(path_to_mixture,
+                   show_col_types = FALSE)
 
+  #Process input data.
+  if(("feature_name" != colnames(.raw_mix)[[1]])){
+    stop("First column must be feature_name and contain informative feature names.")
+  }
+
+  if(("contact_type" != colnames(.raw_mix)[[2]])){
+    stop("Second column must be contact_type: either intra or inter.")
+  }
+
+  .feature_name <- .raw_mix$feature_name
+  .contact_type <- .raw_mix$contact_type
+
+  .mix <- .raw_mix %>%
+    select(-c(1,2)) %>%
+    filter(rowSums(.) > 0)
 
   .fit_init <- nmf_fit(mixture = .mix,
                               n_cell_types = n_cell_types,
@@ -38,7 +51,7 @@ thunder_feature_selection <- function(path_to_mixture,
   #If we detect no informative bins, don't run step two.
   if(0 == 0){
     cat("\n")
-    cat("THUNDER did not detect informative bin-pairs.\n")
+    warning("THUNDER did not detect informative bin-pairs.\n")
     .run_step_two = FALSE
   }
 
@@ -49,7 +62,7 @@ thunder_feature_selection <- function(path_to_mixture,
   if(.run_step_two == TRUE){
     if (is.character(subset_mix_out_path)){
       .subset_mix %>%
-        rownames_to_column(var = "bin_name") %>%
+        rownames_to_column(var = "feature_name") %>%
         write_tsv(file = subset_mix_out_path)
       return(return_list)
     }
@@ -80,7 +93,7 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
 
   .subset_mixture <- read_tsv(.subset_mixture_path,
                               show_col_types = FALSE) %>%
-    column_to_rownames("bin_name")
+    column_to_rownames("feature_name")
 
   .subset_fit <- nmf_fit(mixture = .subset_mixture,
                          n_cell_types = n_cell_types,
@@ -105,7 +118,7 @@ run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
 
   run_step_two <- TRUE
 
-  print("running feature selection")
+  cat("\nRunning feature selection\n")
   #Returns a list with initial NMF fit, subset NMF fit object, and run step two boolean.
   step1_l <- thunder_feature_selection(path_to_mixture, n_cell_types, itter,
                                            out_init_nmf =out_init_nmf,
