@@ -79,7 +79,8 @@ subset_init_nmf <- function(mixture_data, nmf_obj,
     ungroup() %>%
     arrange(thunder_bins) %>%
     pull(thunder_bins)
-  subset_mix <- mixture_data[rows,]
+
+  subset_mix <- tibble(feature_name, contact_type, mixture_data) %>% slice(rows)
 
   return(subset_mix)
 }
