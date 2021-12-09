@@ -4,6 +4,16 @@ THUNDER is a deconvolution method specifically tailored to address unique challe
 
 
 ## Installing and Running THUNDER
+
+### Downloading the GitHub repo
+In order to run the code listed in this README, you should clone this repository using the following command.
+
+```
+git clone https://github.com/brycerowland/thundeR.git
+```
+
+### R Package Installation
+
 THUNDER can be installed using the `devtools` R package with the following code. 
 
 ```
