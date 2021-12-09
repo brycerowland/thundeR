@@ -16,13 +16,19 @@ library(thundeR)
 Estimating cell type proportions from bulk Hi-C data can be performed using the `run_thunder` function as follows:
 
 ```
-run_thunder(path_to_mixture = "tests/testthat/new_cols_test_data2.tsv", 
+thunder_fit <- run_thunder(path_to_mixture = "tests/testthat/new_cols_test_data2.tsv", 
             n_cell_types = 2, itter = 1,
             subset_mix_out_path = "/path/to/out_file/outfile.txt.gz", 
             out_init_nmf = "/path/to/out_init_nmf_fit/init_nmf_fit.RDS")
 ```
 
 where `path_to_mixture` is the file path to the input data (see below for formatting requirements), `n_cell_types` is the number of cell types assumed in the Hi-C mixtures, `itter` is the total number of itterations to run the NMF algorithm (default is 200), `subset_mix_out_path` is a required argument to output the subset mixture matrix after an initial feature selection step, and `out_init_nmf` is an optional argument that is a file path to output the initial NMF object estimated from step 1 of THUNDER. 
+
+The `run_thunder` function returns an NMF object. Cell type proportion estimates are estimated via the `get_props` function:
+
+```
+proportion_estimates <- get_props(thunder_fit)
+```
 
 ## Mixture data format
 THUNDER assumes that mixtures of Hi-C data are stored in long data format where the first row of the file are column names with the following specifications. 
