@@ -6,9 +6,9 @@ THUNDER is a deconvolution method specifically tailored to address unique challe
 ## Installing and Running THUNDER
 THUNDER can be installed using the `devtools` R package with the following code. 
 
-`
+```
 if(!require("devtools")){install.packages("devtools")}
 if(!require("NMF")){install.packages("NMF")}
 devtools::install_github("https://github.com/brycerowland/thundeR.git")
 library(thundeR)
-`
+```
