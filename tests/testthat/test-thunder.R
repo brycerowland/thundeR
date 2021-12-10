@@ -9,9 +9,17 @@ test_that("THUNDER gives an informative error message when feature_name is dropp
 
 })
 
-test_that("THUNDER gives an informative error message when contact_type isn't provided", {
+test_that("THUNDER gives an informative error messages for contact_type", {
 
-  #First column should be feature_name
+
+
+  expect_error(run_thunder("error_in_contact_type.tsv",
+                           n_cell_types = 2,
+                           itter = 1,
+                           subset_mix_out_path = "new_cols_subset.txt.gz"),
+               "tomato, potato")
+
+  #Second column should be contact_type
   expect_error(run_thunder("old_no_contact_type copy.txt",
                            n_cell_types = 2,
                            itter = 1,

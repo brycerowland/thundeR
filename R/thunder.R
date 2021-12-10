@@ -33,6 +33,19 @@ thunder_feature_selection <- function(path_to_mixture,
     stop("Second column must be contact_type: either intra or inter.")
   }
 
+
+  if(!all(unique(.raw_mix$contact_type) %in% c("intra", "inter"))){
+
+    u_c_types <- unique(.raw_mix$contact_type)
+
+    bad_types <- u_c_types[which(!( u_c_types %in% c("intra", "inter")))]
+
+    bad_types_str <- paste(bad_types, collapse = ", ")
+
+    stop(sprintf("Mixture file contains bad column type(s): %s",
+                 bad_types_str))
+  }
+
   .feature_name <- .raw_mix$feature_name
   .contact_type <- .raw_mix$contact_type
 
