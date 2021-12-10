@@ -14,37 +14,11 @@
 #'
 #' @export
 #'
-thunder_feature_selection <- function(path_to_mixture,
+thunder_feature_selection <- function(.raw_mix,
                                       subset_mix_out_path = NULL,
                                       n_cell_types, itter=200,
                     out_init_nmf = NULL,
                     .run_step_two){
-
-  .raw_mix <- read_tsv(path_to_mixture,
-                   show_col_types = FALSE) %>%
-    filter(rowSums(across(-c(1,2))) > 0)
-
-  #Process input data.
-  if(("feature_name" != colnames(.raw_mix)[[1]])){
-    stop("First column must be feature_name and contain informative feature names.")
-  }
-
-  if(("contact_type" != colnames(.raw_mix)[[2]])){
-    stop("Second column must be contact_type: either intra or inter.")
-  }
-
-
-  if(!all(unique(.raw_mix$contact_type) %in% c("intra", "inter"))){
-
-    u_c_types <- unique(.raw_mix$contact_type)
-
-    bad_types <- u_c_types[which(!( u_c_types %in% c("intra", "inter")))]
-
-    bad_types_str <- paste(bad_types, collapse = ", ")
-
-    stop(sprintf("Mixture file contains bad column type(s): %s",
-                 bad_types_str))
-  }
 
   .feature_name <- .raw_mix$feature_name
   .contact_type <- .raw_mix$contact_type
@@ -56,7 +30,7 @@ thunder_feature_selection <- function(path_to_mixture,
                               n_cell_types = n_cell_types,
                               itter = itter)
   if ( is.character(out_init_nmf) ){
-    print("Saving initial NMF fit . . .")
+    cat("\nSaving initial NMF fit . . .\n")
     saveRDS(object = list(.fit_init = .fit_init,
                           .feature_name = .feature_name,
                           .contact_type = .contact_type),
@@ -81,7 +55,6 @@ thunder_feature_selection <- function(path_to_mixture,
   if(.run_step_two == TRUE){
     if (is.character(subset_mix_out_path)){
       .subset_mix %>%
-        rownames_to_column(var = "feature_name") %>%
         write_tsv(file = subset_mix_out_path)
       return(return_list)
     }
@@ -112,7 +85,7 @@ thunder_estimate_CTP <- function(.subset_mixture_path,
 
   .subset_mixture <- read_tsv(.subset_mixture_path,
                               show_col_types = FALSE) %>%
-    column_to_rownames("feature_name")
+    select(-c("feature_name", "contact_type"))
 
   .subset_fit <- nmf_fit(mixture = .subset_mixture,
                          n_cell_types = n_cell_types,
@@ -135,11 +108,38 @@ run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
                     out_init_nmf = NULL,
                     subset_mix_out_path) {
 
+  #Process input data.
+  .raw_mix <- read_tsv(path_to_mixture,
+                       show_col_types = FALSE) %>%
+    filter(rowSums(across(-c(1,2))) > 0)
+
+  #Process input data.
+  if(("feature_name" != colnames(.raw_mix)[[1]])){
+    stop("First column must be feature_name and contain informative feature names.")
+  }
+
+  if(("contact_type" != colnames(.raw_mix)[[2]])){
+    stop("Second column must be contact_type: either intra or inter.")
+  }
+
+
+  if(!all(unique(.raw_mix$contact_type) %in% c("intra", "inter"))){
+
+    u_c_types <- unique(.raw_mix$contact_type)
+
+    bad_types <- u_c_types[which(!( u_c_types %in% c("intra", "inter")))]
+
+    bad_types_str <- paste(bad_types, collapse = ", ")
+
+    stop(sprintf("Mixture file contains bad column type(s): %s",
+                 bad_types_str))
+  }
+
   run_step_two <- TRUE
 
   cat("\nRunning feature selection\n")
   #Returns a list with initial NMF fit, subset NMF fit object, and run step two boolean.
-  step1_l <- thunder_feature_selection(path_to_mixture, n_cell_types, itter,
+  step1_l <- thunder_feature_selection(.raw_mix, n_cell_types, itter,
                                            out_init_nmf =out_init_nmf,
                             subset_mix_out_path = subset_mix_out_path,
                             .run_step_two = run_step_two)
@@ -147,14 +147,14 @@ run_thunder <- function(path_to_mixture, n_cell_types, itter=200,
   run_step_two <- step1_l$run_step_two
 
   if(run_step_two){
-    print("Estimating Cell Type Proprotions with THUNDER Informative Bins")
+    cat("\nEstimating Cell Type Proprotions with THUNDER Informative Bins\n")
 
     .subset_fit <- thunder_estimate_CTP(.subset_mixture = subset_mix_out_path,
                                         n_cell_types,
                                         itter)
     return(.subset_fit)
   } else{
-    cat("Returning Initial NMF fit as final deconvolution estimate.\n")
+    cat("\nReturning Initial NMF fit as final deconvolution estimate.\n")
 
     return(step1_l$fit_init)
   }

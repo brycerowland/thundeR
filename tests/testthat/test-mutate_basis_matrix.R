@@ -1,3 +1,5 @@
+library(NMF)
+
 k <- 3
 
 #Process input data.
