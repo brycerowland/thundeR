@@ -68,7 +68,7 @@ thunder_feature_selection <- function(path_to_mixture,
                                  contact_type = .contact_type)
 
   #If we detect no informative bins, don't run step two.
-  if(0 == 0){
+  if(nrow(.subset_mix) == 0){
     cat("\n")
     warning("THUNDER did not detect informative bin-pairs.\n")
     .run_step_two = FALSE
